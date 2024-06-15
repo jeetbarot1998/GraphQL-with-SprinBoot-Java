@@ -1,23 +1,24 @@
 package com.API.GraphQL.Controller;
 
-import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.BatchMapping;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.graphql.data.method.annotation.*;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Controller
 public class helloController {
 
-    private List<Customer> customerList = List.of(
-            new Customer(1,"A"),
-            new Customer(2, "B"));
+    private List<Customer> customerList = new ArrayList<>(List.of(
+            new Customer(1, "A"),
+            new Customer(2, "B")
+    ));
+
+    private final AtomicInteger id = new AtomicInteger(3);
 
     @QueryMapping
     String hello(){
@@ -57,6 +58,14 @@ public class helloController {
         return customers.stream().collect(Collectors.toMap(
                 customer -> customer, customer ->  new Account(customer.id())
         ));
+    }
+
+    @MutationMapping
+    Customer addCustomer(@Argument String name){
+        var id = this.id.incrementAndGet();
+        Customer customer = new Customer(id, name);
+        customerList.add(customer);
+        return customer;
     }
 
 

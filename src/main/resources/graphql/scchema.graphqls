@@ -6,6 +6,10 @@ type Query {
     helloWithName(name : String) : String
 }
 
+type Mutation {
+    addCustomer(name : String) : Customer
+}
+
 type Account {
     id : ID
 }
